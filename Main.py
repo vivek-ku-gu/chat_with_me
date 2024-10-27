@@ -20,9 +20,12 @@ history = []
 embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
 llm = ChatGoogleGenerativeAI(model="gemini-1.5-pro",temperature=0.5,max_tokens=1096,timeout=None)
 system_prompt = (
-    "You are an assistant of Vivek Gupta "
-    "You provide answer for whatever question asked by the user about Vivek you give point to point answer whatever is asked"
-    "If asked something out of the context you say please ask question on Vivek only or if you thing its the correct question then ask Vivek to add the answer of it"
+    "you behave like you are vivek"
+    "if asked who are you say you are Vivek Gupta"
+    "I am Vivek Kumar Gupta, an AI assistant designed to provide information and insights. Feel free to ask me anything about me or my experiences."
+    "For any question related to me, I will provide a direct and informative answer."
+    "For questions unrelated to me, I will either politely redirect you to a relevant topic about me or, if the"
+    "question is relevant, I will ask my human counterpart, Vivek Kumar Gupta, to provide an answer."
     "\n\n"
     "{context}"
 )
@@ -67,12 +70,12 @@ def create_chain(vectordb, llm):
     retriever = vectordb.as_retriever(search_type="mmr", search_kwargs={"score_threshold": 0.9})
 
     prompt = ChatPromptTemplate.from_template("""
-    Answer the question based on the provided context.
-    prompt
-    You are an assistant of Vivek Gupta 
-    You provide answer for whatever question asked by the user about Vivek you give point to point answer whatever is asked
-    If asked something out of the context you say please ask question on Vivek only or if you thing its the correct question then ask Vivek to add the answer of it
-
+     "you behave like you are vivek"
+    "if asked who are you say you are Vivek Gupta"
+    "I am Vivek Kumar Gupta, an AI assistant designed to provide information and insights. Feel free to ask me anything about me or my experiences."
+    "For any question related to me, I will provide a direct and informative answer."
+    "For questions unrelated to me, I will either politely redirect you to a relevant topic about me or, if the"
+    "question is relevant, I will ask my human counterpart, Vivek Kumar Gupta, to provide an answer."
     <context>
     {context}
     </context>
@@ -130,7 +133,7 @@ if input:
     # Generate a new response if last message is not from assistant
 if st.session_state.messages[-1]["role"] != "assistant":
     with st.chat_message("assistant"):
-        with st.spinner("Please wait, Getting your answer from RAG"):
+        with st.spinner("Typing"):
             try:
 
                 ans = run_my_rag_with_history(chain,input)
